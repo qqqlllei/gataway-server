@@ -17,7 +17,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
-        <docker.image.prefix>reg.zhongjiaxin.com/library</docker.image.prefix>
         <resources.plugin.version>3.0.2</resources.plugin.version>
     </properties>
 
@@ -125,38 +124,6 @@
         </dependencies>
     </dependencyManagement>
 
-    <distributionManagement>
-        <repository>
-            <id>zhongjiaxin-release</id>
-            <name>Nexus Release Repository</name>
-            <url>http://nexus.zhongjiaxin.com/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>zhongjiaxin-snapshot</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>http://nexus.zhongjiaxin.com/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>zhongjiaxin</id>
-            <url>http://nexus.zhongjiaxin.com/content/groups/public/</url>
-            <layout>default</layout>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
-    <repositories>
-        <repository>
-            <id>zhongjiaxin</id>
-            <url>http://nexus.zhongjiaxin.com/content/groups/public/</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
     <!-- 添加spring-boot的maven插件 -->
     <build>
         <plugins>
