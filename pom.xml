@@ -208,7 +208,7 @@
 
                     </resources>
                     <serverId>docker-hub</serverId>
-                    <imageName>reg.zhongjiaxin.com/system/${project.build.finalName}</imageName>
+                    <imageName>10.0.8.189:5000/system/${project.build.finalName}</imageName>
                 </configuration>
             </plugin>
             <plugin>
