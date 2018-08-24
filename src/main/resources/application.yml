@@ -1,0 +1,96 @@
+server:
+  port: 7030
+spring:
+  application:
+    name: gataway-server
+  http:
+    multipart:
+      location: /temp
+
+  profiles:
+    active: @profile-active@
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+  zipkin:
+    kafka:
+      topic: zipkin
+
+  kafka:
+    bootstrap-servers: 10.33.80.101:9092
+
+
+  sleuth:
+    sampler:
+      percentage: 1.0
+
+zuul:
+  ribbon:
+  ignoredServices: '*'
+  sensitive-headers: Cookie,Set-Cookie
+  ratelimit:
+    key-prefix: zuul-ratelimite
+    enabled: true
+    repository: redis
+    default-policy-list:
+      - limit: 10
+        quota: 5
+        refresh-interval: 5
+        type:
+          - user
+
+  clients:
+  - path: /auth/**
+    retryable: 0
+    sensitiveHeadersList: ''
+    serviceId: auth-server
+    stripPrefix: 1
+    url: ''
+  - path: /collection/**
+    retryable: 0
+    sensitiveHeadersList: ''
+    serviceId: collection-server
+    stripPrefix: 1
+    url: ''
+  - path: /waiwei/**
+    retryable: 0
+    sensitiveHeadersList: ''
+    serviceId: out-wechat
+    stripPrefix: 1
+    url: ''
+
+  - path: /neiwei/**
+    retryable: 0
+    sensitiveHeadersList: ''
+    serviceId: in-wechat
+    stripPrefix: 1
+    url: ''
+
+  - path: /customer/**
+    retryable: 0
+    sensitiveHeadersList: ''
+    serviceId: customer-wechat
+    stripPrefix: 1
+    url: ''
+
+management:
+  security:
+    enabled: false
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 6000
+
+ribbon:
+  ReadTimeout: 4000
+  ConnectTimeout: 2000
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 1
+
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="BASE_DIR" value="logs" />
+    <property name="APP" value="gataway-server" />
+    <contextName>${APP}</contextName>
+    <appender name="STDOUT_C" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+        </encoder>
+    </appender>
+    <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${BASE_DIR}/${APP}/info.log</File>
+        <encoder>
+            <pattern> %d^|^%contextName^|^%X{requestId}^|^%level^|^%c{1.}^|^%t^|^%m%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${BASE_DIR}/${APP}/info.%d{_yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="STDOUT_C"/>
+        <appender-ref ref="INFO_LOG"/>
+    </root>
+</configuration>

@@ -1,0 +1,19 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://10.33.80.101:8761/eureka/,http://10.33.80.114:8761/eureka/
+  instance:
+    hostname: 10.33.50.40
+
+
+spring:
+  cloud:
+    config:
+      username: config-server
+      password: 12345678
+      profile: ${spring.profiles.active}
+      label: master
+      discovery:
+        enabled: true
+        serviceId: config-server
+
