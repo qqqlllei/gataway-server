@@ -75,6 +75,27 @@ zuul:
     stripPrefix: 1
     url: ''
 
+  - path: /postLoanBack/**
+    retryable: 0
+    sensitiveHeadersList: ''
+    serviceId: post-loan-back
+    stripPrefix: 1
+    url: ''
+
+  - path: /postLoanFund/**
+    retryable: 0
+    sensitiveHeadersList: ''
+    serviceId: post-loan-fund
+    stripPrefix: 1
+    url: ''
+
+  - path: /postLoanCentral/**
+    retryable: 0
+    sensitiveHeadersList: ''
+    serviceId: post-loan-central
+    stripPrefix: 1
+    url: ''
+
 management:
   security:
     enabled: false
