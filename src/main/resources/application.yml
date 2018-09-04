@@ -11,7 +11,7 @@ spring:
     active: @profile-active@
 
   redis:
-    host: 127.0.0.1
+    host: 10.33.80.101
     port: 6379
 
   zipkin:
@@ -41,61 +41,6 @@ zuul:
         type:
           - user
 
-  clients:
-  - path: /auth/**
-    retryable: 0
-    sensitiveHeadersList: ''
-    serviceId: auth-server
-    stripPrefix: 1
-    url: ''
-  - path: /collection/**
-    retryable: 0
-    sensitiveHeadersList: ''
-    serviceId: collection-server
-    stripPrefix: 1
-    url: ''
-  - path: /waiwei/**
-    retryable: 0
-    sensitiveHeadersList: ''
-    serviceId: out-wechat
-    stripPrefix: 1
-    url: ''
-
-  - path: /neiwei/**
-    retryable: 0
-    sensitiveHeadersList: ''
-    serviceId: in-wechat
-    stripPrefix: 1
-    url: ''
-
-  - path: /customer/**
-    retryable: 0
-    sensitiveHeadersList: ''
-    serviceId: customer-wechat
-    stripPrefix: 1
-    url: ''
-
-  - path: /postLoanBack/**
-    retryable: 0
-    sensitiveHeadersList: ''
-    serviceId: post-loan-back
-    stripPrefix: 1
-    url: ''
-
-  - path: /postLoanFund/**
-    retryable: 0
-    sensitiveHeadersList: ''
-    serviceId: post-loan-fund
-    stripPrefix: 1
-    url: ''
-
-  - path: /postLoanCentral/**
-    retryable: 0
-    sensitiveHeadersList: ''
-    serviceId: post-loan-central
-    stripPrefix: 1
-    url: ''
-
 management:
   security:
     enabled: false
@@ -112,6 +57,6 @@ ribbon:
   ReadTimeout: 4000
   ConnectTimeout: 2000
   MaxAutoRetries: 0
-  MaxAutoRetriesNextServer: 1
-
+  MaxAutoRetriesNextServer: 0
+  ServerListRefreshInterval: 2000
 

@@ -1,9 +1,12 @@
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://10.33.80.101:8761/eureka/,http://10.33.80.114:8761/eureka/
+      defaultZone: http://10.0.8.193:8761/eureka/,http://10.33.80.114:8761/eureka/
+    registry-fetch-interval-seconds: 5
   instance:
     hostname: 10.33.50.40
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 10
 
 
 spring:

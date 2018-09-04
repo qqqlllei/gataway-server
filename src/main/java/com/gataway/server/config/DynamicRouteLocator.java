@@ -1,30 +1,30 @@
 package com.gataway.server.config;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.gataway.server.entity.GataWayRoute;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.cloud.netflix.zuul.filters.discovery.DiscoveryClientRouteLocator;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.*;
 
 public class DynamicRouteLocator extends DiscoveryClientRouteLocator {
 
-    private Logger logger = LoggerFactory.getLogger(DynamicRouteLocator.class);
+    private static final String GATAWAY_CLIENT_PROPERTIES ="gataway-client-properties";
 
     private ZuulProperties properties;
 
-    private GataWayClientProperties gataWayClientProperties;
+    private StringRedisTemplate stringRedisTemplate;
 
     public DynamicRouteLocator(String servletPath, DiscoveryClient discovery, ZuulProperties properties,
-                               ServiceInstance localServiceInstance,GataWayClientProperties gataWayClientProperties) {
+                               ServiceInstance localServiceInstance,StringRedisTemplate stringRedisTemplate) {
         super(servletPath, discovery, properties, localServiceInstance);
         this.properties = properties;
-        this.gataWayClientProperties= gataWayClientProperties;
+        this.stringRedisTemplate= stringRedisTemplate;
     }
 
 
@@ -53,22 +53,25 @@ public class DynamicRouteLocator extends DiscoveryClientRouteLocator {
     private Map<String, ZuulProperties.ZuulRoute> locateRoutesFromProperties() {
         Map<String, ZuulProperties.ZuulRoute> routes = new LinkedHashMap<>();
 
-        List<GataWayRoute> results = gataWayClientProperties.getClients();
-        for (GataWayRoute result : results) {
-            if (StringUtils.isBlank(result.getPath()) && StringUtils.isBlank(result.getUrl())) {
+
+        Set<String> gatawayClientProperties =  stringRedisTemplate.boundSetOps(GATAWAY_CLIENT_PROPERTIES).members();
+
+        for (String client:gatawayClientProperties) {
+            GataWayRoute gataWayRoute = JSONObject.parseObject(client,GataWayRoute.class);
+            if (StringUtils.isBlank(gataWayRoute.getPath()) && StringUtils.isBlank(gataWayRoute.getUrl())) {
                 continue;
             }
 
             ZuulProperties.ZuulRoute zuulRoute = new ZuulProperties.ZuulRoute();
-            zuulRoute.setId(result.getServiceId());
-            zuulRoute.setPath(result.getPath());
-            zuulRoute.setServiceId(result.getServiceId());
-            zuulRoute.setRetryable(("0".equals(result.getRetryable()) ? Boolean.FALSE : Boolean.TRUE));
-            zuulRoute.setStripPrefix(("0".equals(result.getStripPrefix()) ? Boolean.FALSE : Boolean.TRUE));
-            zuulRoute.setUrl(result.getUrl());
+            zuulRoute.setId(gataWayRoute.getServiceId());
+            zuulRoute.setPath(gataWayRoute.getPath());
+            zuulRoute.setServiceId(gataWayRoute.getServiceId());
+            zuulRoute.setRetryable(("0".equals(gataWayRoute.getRetryable()) ? Boolean.FALSE : Boolean.TRUE));
+            zuulRoute.setStripPrefix(("0".equals(gataWayRoute.getStripPrefix()) ? Boolean.FALSE : Boolean.TRUE));
+            zuulRoute.setUrl(gataWayRoute.getUrl());
             List<String> sensitiveHeadersList=null;
-            if(StringUtils.isNotBlank(result.getSensitiveHeadersList())){
-                sensitiveHeadersList = Arrays.asList(result.getSensitiveHeadersList().split(","));
+            if(StringUtils.isNotBlank(gataWayRoute.getSensitiveHeadersList())){
+                sensitiveHeadersList = Arrays.asList(gataWayRoute.getSensitiveHeadersList().split(","));
             }
 
             if (sensitiveHeadersList != null) {
@@ -77,8 +80,6 @@ public class DynamicRouteLocator extends DiscoveryClientRouteLocator {
                 zuulRoute.setSensitiveHeaders(sensitiveHeaderSet);
                 zuulRoute.setCustomSensitiveHeaders(true);
             }
-
-
 
             routes.put(zuulRoute.getPath(), zuulRoute);
         }
