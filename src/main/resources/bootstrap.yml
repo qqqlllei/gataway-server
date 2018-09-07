@@ -7,7 +7,7 @@ eureka:
     hostname: 10.33.50.40
     lease-renewal-interval-in-seconds: 5
     lease-expiration-duration-in-seconds: 10
-
+    instance-id: ${eureka.instance.hostname}:${server.port}
 
 spring:
   cloud:
@@ -19,4 +19,5 @@ spring:
       discovery:
         enabled: true
         serviceId: config-server
-
+    inetutils:
+      preferred-networks: 10

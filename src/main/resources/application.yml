@@ -47,6 +47,11 @@ management:
 
 hystrix:
   command:
+    io-server:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 70000
     default:
       execution:
         isolation:
@@ -60,3 +65,11 @@ ribbon:
   MaxAutoRetriesNextServer: 0
   ServerListRefreshInterval: 2000
 
+
+io-server:
+  ribbon:
+    ReadTimeout: 60000
+    ConnectTimeout: 2000
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 0
+    ServerListRefreshInterval: 2000
