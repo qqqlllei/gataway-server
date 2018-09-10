@@ -40,6 +40,13 @@ zuul:
         refresh-interval: 5
         type:
           - user
+    policies:
+      io-server:
+        limit: 10
+        quota: 1000
+        refresh-interval: 10
+        type:
+          - user
 
 management:
   security:
