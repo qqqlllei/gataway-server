@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.SocketTimeoutException;
 
 /**
  * Created by 李雷 on 2018/8/8.
