@@ -21,6 +21,10 @@ public class RestResponseUtil {
 
     private static String TOKEN_INVALID_RESULT_CODE="3333";
     private static String TOKEN_INVALID_RESULT_MSG="token已失效";
+
+    private static String ILLEGAL_REQUEST_PATH_CODE="4000";
+    private static String ILLEGAL_REQUEST_PATH_MSG="非法请求路径";
+
     private static String CONTENT_TYPE="application/json;charset=UTF-8";
 
     public static void authErrorResponse(RequestContext requestContext,String resultCode,String resultMsg){
@@ -45,5 +49,9 @@ public class RestResponseUtil {
 
     public static void tokenInvalidResponse(RequestContext requestContext){
         authErrorResponse(requestContext,TOKEN_INVALID_RESULT_CODE,TOKEN_INVALID_RESULT_MSG);
+    }
+
+    public static void illegalRequestPath(RequestContext requestContext){
+        authErrorResponse(requestContext,ILLEGAL_REQUEST_PATH_CODE,ILLEGAL_REQUEST_PATH_MSG);
     }
 }

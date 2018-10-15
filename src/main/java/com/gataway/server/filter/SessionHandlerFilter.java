@@ -22,7 +22,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
  * Created by Administrator on 2018/4/14 0014.
  */
 @Component
-public class PreRequestFilter extends ZuulFilter{
+public class SessionHandlerFilter extends ZuulFilter{
 
     private static final String LOGIN_URI = "/authentication/form";
 
