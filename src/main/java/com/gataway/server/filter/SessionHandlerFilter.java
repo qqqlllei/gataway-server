@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.Set;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE;
 
@@ -37,6 +38,19 @@ public class SessionHandlerFilter extends ZuulFilter{
     private static String USER_SESSION="userSession";
 
     private static final String AUTH_SESSION_KEY="sessionKey";
+
+    private static final String CLIENT_ID_PARAM_NAME = "clientId";
+
+    private static final String OPEN_ID_PARAM_NAME="openId";
+
+    private static final String ID_PARAM_NAME="id";
+
+    private static final String RESULT_CODE="resultCode";
+
+    private static final String TIME_OUT_CODE="2222";
+
+    private static final String NO_SESSION_SERVER_LIST="no_session_server_list";
+
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -76,6 +90,25 @@ public class SessionHandlerFilter extends ZuulFilter{
         }
 
         Map<String, Object> authMap =  authFegin.checkToken(token);
+
+        if(TIME_OUT_CODE.equals(authMap.get(RESULT_CODE))){
+            RestResponseUtil.tokenTimeOutResponse(requestContext);
+            return null;
+        }
+
+
+        Set<String> gatawayClientProperties =  stringRedisTemplate.boundSetOps(NO_SESSION_SERVER_LIST).members();
+
+        if(gatawayClientProperties.contains(String.valueOf(authMap.get(CLIENT_ID_PARAM_NAME)))){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(ID_PARAM_NAME,authMap.get(OPEN_ID_PARAM_NAME));
+
+            requestContext.addZuulRequestHeader(USER_SESSION, jsonObject.toJSONString());
+            return null;
+        }
+
+
+
         String key = String.valueOf(authMap.get(AUTH_SESSION_KEY));
         String tokenValue = (String) authMap.get(TOKEN_JTI);
 
