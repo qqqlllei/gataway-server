@@ -1,12 +1,16 @@
 package com.gataway.server.filter;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.gataway.server.config.DynamicRouteLocator;
 import com.gataway.server.fegin.AuthFegin;
 import com.gataway.server.util.RestResponseUtil;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.zuul.filters.Route;
+import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -14,6 +18,8 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,11 +55,16 @@ public class SessionHandlerFilter extends ZuulFilter{
 
     private static final String TIME_OUT_CODE="2222";
 
-    private static final String NO_SESSION_SERVER_LIST="no_session_server_list";
+    private static final String NO_SESSION_SERVER_LIST="gateway-no-session-server-list";
+
+    private static final String DIRECT_TRANSMISSION_URL_LIST="gateway-direct-transmission-url-list";
 
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private DynamicRouteLocator dynamicRouteLocator;
 
     @Autowired
     private AuthFegin authFegin;
@@ -78,6 +89,19 @@ public class SessionHandlerFilter extends ZuulFilter{
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
         String requestURI = request.getRequestURI();
+
+        Route route = dynamicRouteLocator.getMatchingRoute(requestURI);
+
+        String serverId = route.getId();
+
+        String currentPath = route.getPath();
+
+
+
+        BoundHashOperations<String, String, String> hashOperations =  stringRedisTemplate.boundHashOps(DIRECT_TRANSMISSION_URL_LIST);
+        String directTransmissionUrls =  hashOperations.get(serverId);
+        List<String> urls = JSONObject.parseObject(directTransmissionUrls,List.class);
+        if(urls.contains(currentPath)) return null;
 
         if (requestURI.contains(LOGIN_URI) || requestURI.contains(WECHAT_CODE_URL) || requestURI.contains(DING_CODE_URL)) return null;
 

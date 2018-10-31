@@ -14,7 +14,7 @@ import java.util.*;
 
 public class DynamicRouteLocator extends DiscoveryClientRouteLocator {
 
-    private static final String GATAWAY_CLIENT_PROPERTIES ="gataway-client-properties";
+    private static final String GATEWAY_CLIENT_PROPERTIES ="gateway-client-properties";
 
     private ZuulProperties properties;
 
@@ -54,7 +54,7 @@ public class DynamicRouteLocator extends DiscoveryClientRouteLocator {
         Map<String, ZuulProperties.ZuulRoute> routes = new LinkedHashMap<>();
 
 
-        Set<String> gatawayClientProperties =  stringRedisTemplate.boundSetOps(GATAWAY_CLIENT_PROPERTIES).members();
+        Set<String> gatawayClientProperties =  stringRedisTemplate.boundSetOps(GATEWAY_CLIENT_PROPERTIES).members();
 
         for (String client:gatawayClientProperties) {
             GataWayRoute gataWayRoute = JSONObject.parseObject(client,GataWayRoute.class);
