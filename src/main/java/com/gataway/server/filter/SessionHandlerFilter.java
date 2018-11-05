@@ -100,8 +100,10 @@ public class SessionHandlerFilter extends ZuulFilter{
 
         BoundHashOperations<String, String, String> hashOperations =  stringRedisTemplate.boundHashOps(DIRECT_TRANSMISSION_URL_LIST);
         String directTransmissionUrls =  hashOperations.get(serverId);
-        List<String> urls = JSONObject.parseObject(directTransmissionUrls,List.class);
-        if(urls.contains(currentPath)) return null;
+        if(StringUtils.isNotBlank(directTransmissionUrls)){
+            List<String> urls = JSONObject.parseObject(directTransmissionUrls,List.class);
+            if(urls.contains(currentPath)) return null;
+        }
 
         if (requestURI.contains(LOGIN_URI) || requestURI.contains(WECHAT_CODE_URL) || requestURI.contains(DING_CODE_URL)) return null;
 
